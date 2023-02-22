@@ -1,3 +1,5 @@
+const { TestWatcher } = require("jest");
+
 /*
   Do not change the line below. If you'd like to run code from this file, you may use the `exampleSongData` variable below to gain access to tickets data. This data is pulled from the `data/songs.js` file.
 
@@ -19,6 +21,9 @@ const exampleProducts = [
   - The `cart` array is empty.
 */
 function getCartTotal(cart) {
+  if (cart.length === 0) {
+    throw Error("cart is empty.");
+  }
   let result = 0;
   for (let product of cart) {
     result += product.priceInCents;
@@ -36,8 +41,37 @@ function getCartTotal(cart) {
   - Any of the products in the `products` array does not have a `priceInCents` key.
 */
 function filterProductsByPriceRange(products, min, max) {
+  if (!Array.isArray(products) || products.length === 0) {
+    throw Error("The `products` array is empty or not an array.");
+  }
+
+  if (
+    typeof min !== "number" ||
+    isNaN(min) ||
+    typeof max !== "number" ||
+    isNaN(max)
+  ) {
+    throw Error("Either `min` or `max` is not a number.");
+  }
+
+  if (max === 0) {
+    throw Error("`max` is equal to 0.");
+  }
+
+  if (min > max) {
+    throw Error("`min` is greater than `max`.");
+  }
+
+  if (min < 0 || max < 0) {
+    throw Error("Either `min` or `max` is less than 0.");
+  }
+
   const result = [];
   for (let product of products) {
+    if (!product.hasOwnProperty("priceInCents")) {
+      throw Error();
+      // "One of the products does not have a `priceInCents`."
+    }
     if (product.priceInCents >= min && product.priceInCents <= max) {
       result.push(product);
     }
@@ -49,9 +83,25 @@ function filterProductsByPriceRange(products, min, max) {
   If any errors occur in this function, it should return `0`.
 */
 function getTotalOfAllProductsByPriceRange(products, min, max) {
-  const filteredProducts = filterProductsByPriceRange(products, min, max);
-  const total = getCartTotal(filteredProducts);
+  if (
+    !Array.isArray(products) ||
+    products.length === 0 ||
+    typeof min !== "number" ||
+    typeof max !== "number" ||
+    max === 0 ||
+    min > max ||
+    min < 0 ||
+    max < 0
+  ) {
+    return 0;
+  }
 
+  const filteredProducts = filterProductsByPriceRange(products, min, max);
+  if (filteredProducts.length === 0) {
+    return 0;
+  }
+
+  const total = getCartTotal(filteredProducts);
   return total;
 }
 
