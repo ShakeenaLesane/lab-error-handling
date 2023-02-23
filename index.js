@@ -58,14 +58,6 @@ function filterProductsByPriceRange(products, min, max) {
     throw Error("`max` is equal to 0.");
   }
 
-  if (min > max) {
-    throw Error("`min` is greater than `max`.");
-  }
-
-  if (min < 0 || max < 0) {
-    throw Error("Either `min` or `max` is less than 0.");
-  }
-
   const result = [];
   for (let product of products) {
     if (!product.hasOwnProperty("priceInCents")) {
